@@ -52,7 +52,8 @@ export class Order {
       return {
         ...params,
         erc20Token: toContractERC20Address(params.erc20Token),
-        collectionsBytes: toCollectionsBytes(params),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        collectionsBytes: (this.params as any).collectionsBytes ?? toCollectionsBytes(params),
       };
     } else {
       return this.contractKind() == "erc721"
@@ -118,6 +119,27 @@ export class Order {
     if (lc(this.params.maker) !== lc(signer)) {
       throw new Error("Invalid signature");
     }
+  }
+
+  public attachSignature(signature: {
+    signatureType: number;
+    startNonce?: string;
+    collectionsBytes?: string;
+    v: number;
+    r: string;
+    s: string;
+  }) {
+    this.params.r = signature.r;
+    this.params.s = signature.s;
+    this.params.v = signature.v;
+    if (signature.startNonce) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.params as any).startNonce = signature.startNonce;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (this.params as any).collectionsBytes = signature.collectionsBytes;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.params as any).signatureType = signature.signatureType;
   }
 
   public checkValidity() {
@@ -617,6 +639,7 @@ const normalize = (order: Types.BaseOrder): Types.BaseOrder => {
     })),
     nftAmount: order.nftAmount ? s(order.nftAmount) : undefined,
     signatureType: order.signatureType ?? 0,
+    elementOrderId: order.elementOrderId,
     v: order.v ?? 0,
     r: order.r ?? HashZero,
     s: order.s ?? HashZero,
@@ -639,6 +662,7 @@ const normalizeBatchSignedOrder = (order: Types.BatchSignedOrder): Types.BatchSi
     r: lc(order.r),
     s: lc(order.s),
     nonce: toNumber(order.nonce, 2 ** 48),
+    elementOrderId: order.elementOrderId,
   };
   return Object.assign(normalizeOrder, getCurrentOrderInfo(normalizeOrder));
 };

@@ -35,6 +35,7 @@ export type BaseOrder = {
   v?: number;
   r?: string;
   s?: string;
+  elementOrderId?: number;
 };
 
 export type Collection = {
@@ -69,6 +70,7 @@ export type BatchSignedOrder = {
   platformFee?: number;
   royaltyFeeRecipient?: string;
   royaltyFee?: number;
+  elementOrderId?: string;
 };
 
 export type MatchParams = {
