@@ -269,7 +269,6 @@ export const extractByCollectionERC1155 = async (
           uint256 totalMinted
         )
       )`,
-      `function contractVersion() view returns (string)`,
     ]),
     baseProvider
   );
@@ -351,16 +350,14 @@ export const extractByCollectionERC1155 = async (
             c.getTokenInfo(tokenId),
           ]);
 
-          let mintFee: BigNumber | undefined;
+          let mintFee = bn(0);
           try {
             mintFee = await c.mintFee();
           } catch {
             // Skip errors
           }
 
-          const price = mintFee
-            ? saleConfig.pricePerToken.add(mintFee).toString()
-            : saleConfig.pricePerToken.toString();
+          const price = saleConfig.pricePerToken.add(mintFee).toString();
           results.push({
             collection,
             contract: collection,
@@ -372,7 +369,7 @@ export const extractByCollectionERC1155 = async (
               tx: {
                 to: collection,
                 data:
-                  totalRewards == undefined && mintFee != undefined
+                  totalRewards == undefined
                     ? {
                         // `mint`
                         signature: "0x731133e9",
