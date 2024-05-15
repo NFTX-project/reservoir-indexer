@@ -1080,6 +1080,37 @@ export class Router {
               throw new Error(getErrorMessage(error));
             }
           }
+        } else if (["element-partial"].includes(detail.kind)) {
+          const order = detail.order as Sdk.Element.Order;
+          try {
+            const result = await axios.post(
+              `${this.options?.orderFetcherBaseUrl}/api/element-order`,
+              {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                elementId: order.params.elementId,
+                taker,
+                chainId: this.chainId,
+                metadata: this.options?.orderFetcherMetadata,
+              }
+            );
+            const signature = result.data.signature;
+            order.attachSignature(signature);
+            details[i].kind = "element";
+          } catch (error) {
+            if (options?.onError) {
+              options.onError("order-fetcher-element-listing", error, {
+                orderId: detail.orderId,
+                additionalInfo: {
+                  detail,
+                  taker,
+                },
+              });
+            }
+
+            if (!options?.partial) {
+              throw new Error(getErrorMessage(error));
+            }
+          }
         }
       })
     );
@@ -4588,6 +4619,42 @@ export class Router {
         throw new Error("Could not fetch calldata for all Blur bids");
       }
     }
+
+    await Promise.all(
+      details.map(async (detail, i) => {
+        if (["element-partial"].includes(detail.kind)) {
+          const order = detail.order as Sdk.Element.Order;
+          try {
+            const result = await axios.post(
+              `${this.options?.orderFetcherBaseUrl}/api/element-order`,
+              {
+                elementId: order.params.elementId,
+                taker,
+                chainId: this.chainId,
+                metadata: this.options?.orderFetcherMetadata,
+              }
+            );
+            const signature = result.data.signature;
+            order.attachSignature(signature);
+            details[i].kind = "element";
+          } catch (error) {
+            if (options?.onError) {
+              options.onError("order-fetcher-element-offer", error, {
+                orderId: detail.orderId,
+                additionalInfo: {
+                  detail,
+                  taker,
+                },
+              });
+            }
+
+            if (!options?.partial) {
+              throw new Error(getErrorMessage(error));
+            }
+          }
+        }
+      })
+    );
 
     const getFees = (ownDetail: BidDetails) =>
       (ownDetail.fees ?? []).filter(
