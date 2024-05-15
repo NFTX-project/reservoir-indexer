@@ -132,12 +132,14 @@ export class Order {
     this.params.r = signature.r;
     this.params.s = signature.s;
     this.params.v = signature.v;
+
     if (signature.startNonce) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this.params as any).startNonce = signature.startNonce;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this.params as any).collectionsBytes = signature.collectionsBytes;
     }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.params as any).signatureType = signature.signatureType;
   }
@@ -639,7 +641,7 @@ const normalize = (order: Types.BaseOrder): Types.BaseOrder => {
     })),
     nftAmount: order.nftAmount ? s(order.nftAmount) : undefined,
     signatureType: order.signatureType ?? 0,
-    elementOrderId: order.elementOrderId,
+    elementId: order.elementId,
     v: order.v ?? 0,
     r: order.r ?? HashZero,
     s: order.s ?? HashZero,
@@ -662,7 +664,7 @@ const normalizeBatchSignedOrder = (order: Types.BatchSignedOrder): Types.BatchSi
     r: lc(order.r),
     s: lc(order.s),
     nonce: toNumber(order.nonce, 2 ** 48),
-    elementOrderId: order.elementOrderId,
+    elementId: order.elementId,
   };
   return Object.assign(normalizeOrder, getCurrentOrderInfo(normalizeOrder));
 };

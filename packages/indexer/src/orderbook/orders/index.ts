@@ -317,7 +317,7 @@ export const generateListingDetailsV6 = async (
 
     case "element-erc721":
     case "element-erc1155": {
-      if (order.rawData && order.rawData.elementOrderId) {
+      if (order.rawData && order.rawData.elementId) {
         return {
           kind: "element-partial",
           ...common,
@@ -974,7 +974,7 @@ export const generateBidDetailsV6 = async (
 
     case "element-erc721":
     case "element-erc1155": {
-      if (order.rawData && order.rawData.elementOrderId) {
+      if (order.rawData && order.rawData.elementId) {
         return {
           kind: "element-partial",
           ...common,

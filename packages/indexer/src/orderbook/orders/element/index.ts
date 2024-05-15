@@ -36,8 +36,8 @@ export const save = async (orderInfos: OrderInfo[]): Promise<SaveResult[]> => {
   const handleOrder = async ({ orderParams, metadata }: OrderInfo) => {
     try {
       const order = new Sdk.Element.Order(config.chainId, orderParams);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const isPartialOrder = (orderParams as any).elementOrderId ? true : false;
+      const isPartialOrder = orderParams.elementId ? true : false;
+
       const id = keccak256(
         defaultAbiCoder.encode(["bytes32", "uint256"], [order.hash(), order.params.nonce])
       );

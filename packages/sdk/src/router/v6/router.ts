@@ -1087,7 +1087,7 @@ export class Router {
               `${this.options?.orderFetcherBaseUrl}/api/element-order`,
               {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                elementOrderId: (order.params as any).elementOrderId,
+                elementId: order.params.elementId,
                 taker,
                 chainId: this.chainId,
                 metadata: this.options?.orderFetcherMetadata,
@@ -4628,8 +4628,7 @@ export class Router {
             const result = await axios.post(
               `${this.options?.orderFetcherBaseUrl}/api/element-order`,
               {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                elementOrderId: (order.params as any).elementOrderId,
+                elementId: order.params.elementId,
                 taker,
                 chainId: this.chainId,
                 metadata: this.options?.orderFetcherMetadata,
