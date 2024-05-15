@@ -5,7 +5,7 @@ export const VaultFactory: ChainIdToAddress = {
   [Network.EthereumSepolia]: "0x31c56caf49125043e80b4d3c7f8734f949d8178c",
   [Network.Ethereum]: "0xc255335bc5abd6928063f5788a5e420554858f01",
   [Network.Arbitrum]: "0x4deeb9d2bff2e9c35ce1f013dcc4582f891cb711",
-  [Network.Base]: "0xc255335bc5abd6928063f5788a5e420554858f01",
+  [Network.Base]: "0x0d74b761eab5cc7cc0e4e625a2e2b8251a4915c6",
 };
 
 export const MarketplaceZap: ChainIdToAddress = {
