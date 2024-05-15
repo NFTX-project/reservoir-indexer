@@ -193,6 +193,10 @@ export type GenericOrder =
   | {
       kind: "mintify";
       order: Sdk.Mintify.Order;
+    }
+  | {
+      kind: "element-partial";
+      order: Sdk.Element.Order;
     };
 
 // Listings

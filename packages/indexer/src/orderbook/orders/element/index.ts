@@ -36,6 +36,8 @@ export const save = async (orderInfos: OrderInfo[]): Promise<SaveResult[]> => {
   const handleOrder = async ({ orderParams, metadata }: OrderInfo) => {
     try {
       const order = new Sdk.Element.Order(config.chainId, orderParams);
+      const isPartialOrder = orderParams.elementId ? true : false;
+
       const id = keccak256(
         defaultAbiCoder.encode(["bytes32", "uint256"], [order.hash(), order.params.nonce])
       );
@@ -98,23 +100,27 @@ export const save = async (orderInfos: OrderInfo[]): Promise<SaveResult[]> => {
       }
 
       // Check: order is valid
-      try {
-        order.checkValidity();
-      } catch {
-        return results.push({
-          id,
-          status: "invalid",
-        });
+      if (!isPartialOrder) {
+        try {
+          order.checkValidity();
+        } catch {
+          return results.push({
+            id,
+            status: "invalid",
+          });
+        }
       }
 
       // Check: order has a valid signature
-      try {
-        order.checkSignature();
-      } catch {
-        return results.push({
-          id,
-          status: "invalid-signature",
-        });
+      if (!isPartialOrder) {
+        try {
+          order.checkSignature();
+        } catch {
+          return results.push({
+            id,
+            status: "invalid-signature",
+          });
+        }
       }
 
       // Check: order fillability

@@ -317,11 +317,19 @@ export const generateListingDetailsV6 = async (
 
     case "element-erc721":
     case "element-erc1155": {
-      return {
-        kind: "element",
-        ...common,
-        order: new Sdk.Element.Order(config.chainId, order.rawData),
-      };
+      if (order.rawData && order.rawData.elementId) {
+        return {
+          kind: "element-partial",
+          ...common,
+          order: new Sdk.Element.Order(config.chainId, order.rawData),
+        };
+      } else {
+        return {
+          kind: "element",
+          ...common,
+          order: new Sdk.Element.Order(config.chainId, order.rawData),
+        };
+      }
     }
 
     case "looks-rare": {
@@ -966,11 +974,19 @@ export const generateBidDetailsV6 = async (
 
     case "element-erc721":
     case "element-erc1155": {
-      return {
-        kind: "element",
-        ...common,
-        order: new Sdk.Element.Order(config.chainId, order.rawData),
-      };
+      if (order.rawData && order.rawData.elementId) {
+        return {
+          kind: "element-partial",
+          ...common,
+          order: new Sdk.Element.Order(config.chainId, order.rawData),
+        };
+      } else {
+        return {
+          kind: "element",
+          ...common,
+          order: new Sdk.Element.Order(config.chainId, order.rawData),
+        };
+      }
     }
 
     case "zeroex-v4-erc721":
